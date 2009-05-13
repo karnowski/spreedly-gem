@@ -116,7 +116,8 @@ module Spreedly
     
     # Looks a subscriber up by id.
     def self.find(id)
-      new(Spreedly.get("/subscribers/#{id}.xml")['subscriber'])
+      xml = Spreedly.get("/subscribers/#{id}.xml")
+      xml.empty? ? nil : new(['subscriber'])
     end
     
     # Returns all the subscribers in your site.

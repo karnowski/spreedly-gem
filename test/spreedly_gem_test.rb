@@ -45,6 +45,10 @@ class SpreedlyGemTest < Test::Unit::TestCase
       assert_nil subscriber.active_until
     end
     
+    should "return nil when getting a subscriber that does NOT exist" do
+      assert_nil Spreedly::Subscriber.find("junk")
+    end
+    
     should "expose and parse attributes" do
       subscriber = create_subscriber
       assert_kind_of Time, subscriber.created_at
@@ -110,12 +114,12 @@ class SpreedlyGemTest < Test::Unit::TestCase
       sub = create_subscriber
       assert !sub.active?
       sub.comp(1, 'days')
-
+  
       sub = Spreedly::Subscriber.find(sub.id)
       assert sub.active?
       old_active_until = sub.active_until
       sub.comp(1, 'days')
-
+  
       sub = Spreedly::Subscriber.find(sub.id)
       assert sub.active?
       assert old_active_until < sub.active_until
@@ -184,7 +188,7 @@ class SpreedlyGemTest < Test::Unit::TestCase
         
         ex = assert_raise(RuntimeError){sub.activate_free_trial(0)}
         assert_match %r{no longer exists}, ex.message
-
+  
         ex = assert_raise(RuntimeError){sub.activate_free_trial(nil)}
         assert_match %r{missing}, ex.message
       end
